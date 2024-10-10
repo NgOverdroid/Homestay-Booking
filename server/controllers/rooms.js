@@ -3,7 +3,7 @@ const router = express.Router();
 const {getRoom} = require("../models/Room");
 const {getVacantDates} = require('../models/Contract');
 
-router.get("/room:room_id", async (req, res) => {
+router.get("/:room_id", async (req, res) => {
     try {
         const room = await getRoom(req.params.room_id);
         const vacant_dates = await getVacantDates(req.params.room_id);

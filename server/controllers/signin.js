@@ -6,9 +6,9 @@ router.post('/', async (req, res) =>{
     try{
         const find_user = await signin(req.body.email);
         if (find_user)
-            res.send();
+            res.sendStatus(200);
         else
-            res.send("This account doesn't exist");
+            res.sendStatus(404);
     } catch(error) {
         res.send("Error at signin.js " + error);
     }

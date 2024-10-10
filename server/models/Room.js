@@ -71,6 +71,9 @@ async function getHomepageRooms(){
 }
 
 async function searchRooms(state, checkin, checkout){
-
+    const results = await sequelize.query(`
+        SELECT * FROM rooms
+        WHERE state=${state} OR city=${state} AND checkin<>${checkin} AND checkout<>${checkout};
+        `);
 }
 module.exports = {room, getRoom, getHomepageRooms, searchRooms};

@@ -21,6 +21,9 @@ const router = createBrowserRouter([
         </Suspense>
       },
     ]
+  },
+  {
+    path: 'account',
   }
 ]);
 

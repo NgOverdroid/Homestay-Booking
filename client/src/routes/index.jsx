@@ -1,7 +1,7 @@
 import React, {useState, useRef, useEffect} from "react";
 import Card from '../components/Card/Card.jsx';
 import Filter from "../components/Filter/Filter";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData} from "react-router-dom";
 
 export default function Index() {
   const places = useLoaderData();

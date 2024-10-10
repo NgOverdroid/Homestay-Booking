@@ -1,6 +1,6 @@
 const {DataTypes, Model, QueryTypes} = require('sequelize');
 const sequelize = require('../database/database');
-const user = require('../models/user');
+const {user} = require('../models/user');
 
 class room extends Model {}
 
@@ -20,6 +20,10 @@ room.init(
         'owner_id': {
             type: DataTypes.INTEGER,
             allowNull: false,
+            references: {
+                model: user,
+                key: 'user_id'
+            }
         },
         'cost': {
             type: DataTypes.DECIMAL,
@@ -66,4 +70,7 @@ async function getHomepageRooms(){
     }
 }
 
-module.exports = {room, getRoom, getHomepageRooms};
+async function searchRooms(state, checkin, checkout){
+
+}
+module.exports = {room, getRoom, getHomepageRooms, searchRooms};

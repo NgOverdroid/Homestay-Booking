@@ -1,4 +1,4 @@
-const {DataTypes, Model} = require ('sequelize');
+const {DataTypes, Model, QueryTypes} = require ('sequelize');
 const sequelize = require('../database/database');
 const {user} = require('../models/user');
 const {room} = require('../models/Room');
@@ -52,8 +52,22 @@ contract.init(
     }
 );
 
-async function getVacantDates(){
-
+async function getVacantDates(room_id){
+    try{
+        const vacant_dates = await sequelize.query(`
+            SELECT checkin, checkout FROM contracts
+            WHERE room_id = ${room_id};
+            `, {
+                type: QueryTypes.SELECT,
+                model: contract,
+                mapToModel: true
+        });
+        
+        return vacant_dates;
+    }
+    catch(error) {
+        return error;
+    }
 }
 
 module.exports = {getVacantDates};

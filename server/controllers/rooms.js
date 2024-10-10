@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const {getRoom} = require("../models/Room");
+const {getVacantDates} = require('../models/Contract');
 
 router.get("/room:room_id", async (req, res) => {
     try {
         const room = await getRoom(req.params.room_id);
-        if(room)
-            res.send(room);
+        const vacant_dates = await getVacantDates(req.params.room_id);
+        if(room || vacant_dates)
+            res.send({room, vacant_dates});
         else
             res.status(400).json({message: "room not found"});
     } catch (error) {

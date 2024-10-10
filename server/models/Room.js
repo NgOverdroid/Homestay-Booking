@@ -59,6 +59,7 @@ async function getHomepageRooms(){
         const find_rooms = await sequelize.query(`
             SELECT room_id, state, city, cost, img_src FROM rooms
             LIMIT 36
+            ORDER BY cost ASC
             `, {
             type: QueryTypes.SELECT,
             model: room,

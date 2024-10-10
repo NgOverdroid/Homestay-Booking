@@ -78,13 +78,12 @@ async function getVacantDates(room_id){
                 model: contract,
                 mapToModel: true
         });
-        
+
         return months.map(month =>{
-            return {
-                [month]: vacant_dates
-                .filter(date => 
-                    date.checkin.substring(5,7) == month || date.checkout.substring(5,7) == month)
-            };
+            let result = vacant_dates
+                        .filter(date => date.month == month);
+            if (result)
+                return result;
         });
     }
     catch(error) {
@@ -92,4 +91,16 @@ async function getVacantDates(room_id){
     }
 }
 
-module.exports = {getVacantDates};
+async function getContract(user_id){
+    try{
+        const contract = await sequelize.query(`
+            SELECT * FROM CONTRACT
+            WHERE user_id=${user_id};
+            `,{});
+    }
+    catch(error){
+
+    }
+}
+
+module.exports = {getVacantDates, getContract};

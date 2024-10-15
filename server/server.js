@@ -1,7 +1,8 @@
 const express = require("express");
+const app = express();
 require('dotenv').config();
 const cors = require("cors");
-const app = express();
+const cookieParser = require('cookie-parser');
 const rooms_urls = require('./controllers/rooms');
 const signin_urls = require('./controllers/signin');
 const signup_urls = require('./controllers/signup');
@@ -10,6 +11,7 @@ const {getHomepageRooms} = require('./models/Room');
 
 /* Middlewares */
 app.use(cors()); //cross origin sites
+app.use(cookieParser()); // parse cookies
 app.use(express.static('public'));
 app.use(express.json()); // To parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse query parameters bodies

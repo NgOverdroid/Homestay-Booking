@@ -64,7 +64,7 @@ async function getHomepageRooms(){
             type: QueryTypes.SELECT,
             model: room,
             mapToModel: true, 
-          });
+        });
         return find_rooms;
     } catch(error){
         return error;

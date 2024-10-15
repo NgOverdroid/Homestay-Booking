@@ -1,16 +1,11 @@
-import React, {useState} from "react";
+import React from "react";
 import dayjs from "dayjs";
 
-export default function Dates({currentTime}){
-    const [dayColor, setDayColor] = useState('1900-01-01');
+export default function Dates({currentTime, checkin_date, checkout_date}){
     const blankSlots = [];
     const daysInMonth = [];
     const date01 = dayjs(`${currentTime.year()}-${currentTime.month()+1}-01`); //2024-08-01
     const dayOfWeek = date01.day(); // determine the day of week of day object 2024-08-01
-
-    function handleColor(e){
-        setDayColor(e.target.getAttribute('data-testid'));
-    }
 
     for (let i = 0; i < dayOfWeek; i++){ 
     // day of week reveals how many blank slots there are before date 1st
@@ -28,7 +23,7 @@ export default function Dates({currentTime}){
         daysInMonth.push(
             <div key={"day" + i}>
                 {
-                (full_date == dayColor) 
+                (full_date == checkin_date || full_date == checkout_date) 
                 ? 
                     <button 
                     type="button" 
@@ -49,7 +44,7 @@ export default function Dates({currentTime}){
     }
     return(
         <>
-            <div onClick={(e) => handleColor(e)} className="flex flex-row flex-wrap">
+            <div className="flex flex-row flex-wrap">
                 {blankSlots}
                 {daysInMonth}
             </div>

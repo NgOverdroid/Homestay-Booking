@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {signin} = require('../models/user');
+const {signin, emailExists} = require('../models/user');
 
 router.post('/', async (req, res) =>{
     try{

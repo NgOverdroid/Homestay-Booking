@@ -9,7 +9,7 @@ export default function Index() {
   const intersect_card = useRef(null);
 
   const list_cards = places.map((place, index) => {
-    if (index <= cards - 1)
+    if (index < cards)
       return <Card 
               key={place.room_id}
               state={place.state}
@@ -23,13 +23,13 @@ export default function Index() {
   useEffect(() => {
     const observer = new IntersectionObserver(entries =>{
       if (entries[0].isIntersecting)
-        if (cards <= 36)
-          setCards( (prevCards) => prevCards + 12 );
-      console.log(entries[0].isIntersecting);
+        setCards( cards + 12 );
     });
 
-    observer.observe(intersect_card.current);
-
+    if (cards <= 36)
+      observer.observe(intersect_card.current);
+    else 
+      observer.unobserve();
     return () => {
       observer.disconnect();
     }
@@ -46,4 +46,20 @@ export default function Index() {
           <div ref={intersect_card} id="intersectcard"></div> 
       </>
   );
+}
+
+export async function loader() {
+  try {
+    const response = await fetch("http://127.0.0.1:3001");
+    if (!response.ok)
+      throw new Error("Failed to fetch");
+    return await response.json();
+  } 
+  catch(error) {
+    throw error;
+  }
+}
+
+export async function action() {
+  return null;
 }

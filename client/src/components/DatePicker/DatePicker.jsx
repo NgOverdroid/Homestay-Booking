@@ -6,9 +6,11 @@ import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 const rightArrow = <FontAwesomeIcon icon={faArrowRight} />
 const leftArrow = <FontAwesomeIcon icon={faArrowLeft} />
 
-function DatePicker({checkinDate, setCheckinDate, checkoutDate, setCheckoutDate}){
+function DatePicker(){
     const monthsList = useRef(null);
     const [calendarPage, setCalendarPage] = useState(0);
+    const [checkinDate, setCheckinDate] = useState('');
+    const [checkoutDate, setCheckoutDate] = useState('');
 
     if(monthsList.current === null){
         monthsList.current = addMonths();
@@ -25,12 +27,18 @@ function DatePicker({checkinDate, setCheckinDate, checkoutDate, setCheckoutDate}
     }
     
     function setCheckDate(e){
+        let clicked_date = e.target.getAttribute('data-testid');
         if (checkinDate == "")
-            setCheckinDate(e.target.getAttribute('data-testid'));
-        else if (checkoutDate == ""){
-            if (e.target.getAttribute('data-testid') > checkinDate)
-                setCheckoutDate(e.target.getAttribute('data-testid'));
-        }
+            setCheckinDate(clicked_date);
+        else if (clicked_date < checkinDate)
+            setCheckinDate(clicked_date);
+        else if (clicked_date > checkinDate)
+            setCheckoutDate(clicked_date);
+    }
+    
+    function clearDates() {
+        setCheckinDate("");
+        setCheckoutDate("");
     }
         
     function goLeftPage(){
@@ -46,7 +54,7 @@ function DatePicker({checkinDate, setCheckinDate, checkoutDate, setCheckoutDate}
     }
 
     return (
-            <div className="sm:flex absolute cursor-auto bg-white top-full w- left-0 z-10 rounded-lg border-gray-300 border">
+        <div className="sm:flex absolute cursor-auto bg-white top-full w- left-0 z-10 rounded-lg border-gray-300 border">
             {/* <!-- Calendar --> */}
             <div className="p-3 space-y-0.5">
                 {/* <!-- Months --> */}
@@ -160,11 +168,12 @@ function DatePicker({checkinDate, setCheckinDate, checkoutDate, setCheckoutDate}
 
                 <!-- Days --> */}
                 <div className="flex w-80 flex-wrap" onClick={(e) => setCheckDate(e)}>
-                <Dates currentTime={monthsList.current[calendarPage + 1]}/>
-                    
+                    <Dates currentTime={monthsList.current[calendarPage + 1]}/>
                 </div>
                 {/* <!-- Days --> */}
             </div>
+            <input type="date" name='checkin_date' hidden value={checkinDate}/>
+            <input type="date" name='checkout_date' hidden value={checkoutDate}/>
         </div>
 
     );

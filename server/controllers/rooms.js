@@ -10,14 +10,14 @@ router.get("/:room_id", async (req, res) => {
         if(room || vacant_dates)
             res.send({room, vacant_dates});
         else
-            res.status(400).json({message: "room not found"});
+            res.senStatus(400);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "An error occurred while retrieving the room" });
     }
 })
 
-router.post("/room:room_id/contract", async (req, res) => {
+router.post("/contract", async (req, res) => {
     try {
         const contract = await createContract();
         res.json(contract);

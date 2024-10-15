@@ -1,7 +1,7 @@
 import React, {useState, lazy, Suspense, useRef} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass} from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Form } from 'react-router-dom';
 
 const magnifyingGlass = <FontAwesomeIcon icon={faMagnifyingGlass} />;
 
@@ -10,18 +10,10 @@ const DatePicker = lazy(() => import('../DatePicker/DatePicker.jsx'));
 
 function Searchbar({toggleDatePicker, setToggleDatePicker}) {
     const [toggleGuest, setToggleGuest] = useState(false);
-    const [checkinDate, setCheckinDate] = useState('');
-    const [checkoutDate, setCheckoutDate] = useState('');
-    
-    const startSearch = (e) => {
-        e.preventDefault();
-        const navigate = useNavigate();
-        navigate(`/search?q=${encodeURIComponent(query)}`);
-    };
 
     return(
         <>
-        <form className="flex flex-box border border-solid border-neutral-300 rounded-full w-fit px-4 relative">
+        <Form className="flex flex-box border border-solid border-neutral-300 rounded-full w-fit px-4 relative">
             <div className="p-2.5">
                 <div className="text-left text-sm font-semibold">Where</div>
                 <input name="where" placeholder="Search destination" className="block" required/>
@@ -31,12 +23,7 @@ function Searchbar({toggleDatePicker, setToggleDatePicker}) {
                 <div className="text-gray-500 text-left text-base">Add dates</div>
                 { toggleDatePicker && 
                 <Suspense>
-                    <DatePicker className={toggleDatePicker ? '' : 'hidden'} 
-                                checkinDate={checkinDate}
-                                checkoutDate={checkoutDate}
-                                setCheckinDate={setCheckinDate}
-                                setCheckoutDate={setCheckoutDate}>
-                    </DatePicker>
+                    <DatePicker className={toggleDatePicker ? '' : 'hidden'}/>
                 </Suspense>
                 }
             </div>
@@ -56,11 +43,9 @@ function Searchbar({toggleDatePicker, setToggleDatePicker}) {
                 }
             </div>
             <div className='flex items-center'>
-                <button className={`h-10 bg-red-500 rounded-full mx-auto flex items-center justify-center ${toggleGuest ? " w-24" : " w-10"}`} onClick={(e) => startSearch(e)}>{magnifyingGlass}</button>
+                <button className={`h-10 bg-red-500 rounded-full mx-auto flex items-center justify-center ${toggleGuest ? " w-24" : " w-10"}`} type='button'>{magnifyingGlass}</button>
             </div>
-            <input type="date" name='checkin_date' className='hidden' defaultValue={checkinDate}/>
-            <input type="date" name='checkout_date' className='hidden' defaultValue={checkoutDate}/>
-        </form>
+        </Form>
         </>
     );
 }

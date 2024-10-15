@@ -2,26 +2,12 @@ const express = require('express');
 const router = express.Router();
 const { createNewUser, emailExists } = require('../models/user');
 
-router.use((req,res,next) => {
-    const jwt = req.headers.authorization?.split(" ")[1];
-    if (jwt)
-        next();
-    else 
-        res.send({
-            jwt_status: true
-        });
-});
-
 router.get('/', async(req, res) => {
     const email_exists = await emailExists(req);
     if(email_exists)
-        res.send({
-            email_unique: true
-        });
+        res.sendStatus();
     else
-        res.send({
-            email_unique: false
-        });
+        res.sendStatus();
 });
 
 router.post('/', async (req, res) =>{
@@ -32,11 +18,7 @@ router.post('/', async (req, res) =>{
             req.body.email, 
             req.body.password);
         if(user_creation)
-            return resstatus(201).json({
-                message: "User created successfully",
-            });
-        else 
-            res.send();
+            return res.sendStatus(201);
     }
     catch(error){
         res.send("Error at signup.js" + error);
@@ -44,3 +26,4 @@ router.post('/', async (req, res) =>{
 });
 
 module.exports = router;
+

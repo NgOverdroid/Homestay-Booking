@@ -15,7 +15,6 @@ export default function Index() {
               state={place.state}
               city={place.city}
               cost={place.cost}
-              description={place.description}
               img_src={place.img_src}
               ></Card>
   })

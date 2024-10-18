@@ -1,10 +1,10 @@
 const {DataTypes, Model, QueryTypes} = require('sequelize');
 const sequelize = require('../database/database');
-const {user} = require('../models/user');
+const {User} = require('../models/UserModel');
 
-class room extends Model {}
+class Room extends Model {}
 
-room.init(
+Room.init(
     {
         'room_id': {
             type: DataTypes.INTEGER,
@@ -21,7 +21,7 @@ room.init(
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: user,
+                model: User,
                 key: 'user_id'
             }
         },
@@ -40,13 +40,14 @@ room.init(
     },
     {
         sequelize,
-        timestamps: false
+        timestamps: false,
+        tableName: 'rooms'
     }
 );
 
 async function getRoom(room_id){
     try{
-        const find_room = await room.findByPk(room_id);
+        const find_room = await Room.findByPk(room_id);
         return find_room;
     }
     catch(error) {
@@ -62,7 +63,7 @@ async function getHomepageRooms(){
             ORDER BY cost ASC
             `, {
             type: QueryTypes.SELECT,
-            model: room,
+            model: Room,
             mapToModel: true, 
         });
         return find_rooms;
@@ -77,4 +78,5 @@ async function searchRooms(state, checkin, checkout){
         WHERE state=${state} OR city=${state} AND checkin<>${checkin} AND checkout<>${checkout};
         `);
 }
-module.exports = {room, getRoom, getHomepageRooms, searchRooms};
+
+module.exports = {Room, getRoom, getHomepageRooms, searchRooms};

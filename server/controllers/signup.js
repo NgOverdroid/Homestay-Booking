@@ -1,27 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const { createNewUser, emailExists } = require('../models/user');
+const { createNewUser, createToken } = require('../models/UserModel');
+const {registrationware} = require('../middlewares/middlewares');
 
-router.get('/', async(req, res) => {
-    const email_exists = await emailExists(req);
-    if(email_exists)
-        res.sendStatus();
-    else
-        res.sendStatus();
+router.use(registrationware);
+
+router.get('/', (req, res) => {
+    res.sendStatus(200);
 });
 
 router.post('/', async (req, res) =>{
     try{
-        const user_creation = await createNewUser(
+        const user_id = await createNewUser(
             req.body.first_name, 
             req.body.last_name, 
             req.body.email, 
-            req.body.password);
-        if(user_creation)
+            req.body.password
+        );
+        console.log(user_id);
+        if(user_id){
+            const token = createToken(user_id);
+            res.cookie('token', token, {httpOnly: true, maxAge: 259200000});
             return res.sendStatus(201);
+        }
+        else
+            return res.sendStatus(404);
     }
     catch(error){
-        res.send("Error at signup.js" + error);
+        return res.sendStatus(500);   
     }
 });
 

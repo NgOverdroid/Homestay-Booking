@@ -1,11 +1,13 @@
 const {DataTypes, Model} = require("sequelize");
 const sequelize = require('../database/database');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const saltRounds = 10;
+require('dotenv').config({path: "../.env"});
 
-class user extends Model {}
+class User extends Model {}
 
-user.init(
+User.init(
     {
         'user_id': {
             type: DataTypes.INTEGER,
@@ -35,13 +37,14 @@ user.init(
     },
     {
         sequelize,
-        timestamps: false
+        timestamps: false,
+        tableName: 'users'
     }
 );
 
 async function signin(email, password) {
     try {
-        const found_user = await user.findOne({ where: { email} });
+        const found_user = await User.findOne({ where: { email} });
         if (found_user) {
             const compare = bcrypt.compareSync(password, found_user.password);
             if(compare)
@@ -56,15 +59,10 @@ async function signin(email, password) {
     }
 }
 
-async function emailExists(email){
-    const find_email = await user.findOne({ where: { email } });
-    return !!find_email; // Returns true if email exists, otherwise false
-}
-
 async function createNewUser(first_name, last_name, email, password){
     try{
         const hashed_password = bcrypt.hashSync(password, saltRounds);
-        const new_user = await user.create(
+        const new_user = await User.create(
             {
                 'first_name': first_name,
                 'last_name': last_name,
@@ -72,17 +70,16 @@ async function createNewUser(first_name, last_name, email, password){
                 'password': hashed_password,
             }
         );
-        console.log(new_user instanceof user);
-        return new_user.email;
+        return new_user.user_id;
     }
     catch(error){
-        console.log("Error at /models/User.js " + error);
+        console.log("Error at /models/UserModel.js " + error);
     }
 }
 
 async function deleteUser(email, password){
     try {
-        const found_user = await user.findOne({ where: { email} });
+        const found_user = await User.findOne({ where: { email} });
         if (found_user) {
             const compare = bcrypt.compareSync(password, found_user.password);
             if(compare)
@@ -93,8 +90,24 @@ async function deleteUser(email, password){
         else 
             return false;
     } catch(error) {
-        console.log("Error at /models/User.js" + error);
+        console.log("Error at /models/UserModel.js" + error);
     }
 }
 
-module.exports = {user, signin, createNewUser, emailExists, deleteUser};
+function createToken(id){
+    const secret = process.env.JWT_SECRET;
+    const token = jwt.sign(
+        {id}, 
+        secret, 
+        {
+            expiresIn: 259200,
+        }
+    );
+    return token;
+}
+
+function checkToken(cookie){
+    
+}
+
+module.exports = {User, signin, createNewUser, deleteUser, createToken};

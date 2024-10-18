@@ -7,7 +7,7 @@ const rooms_urls = require('./controllers/rooms');
 const signin_urls = require('./controllers/signin');
 const signup_urls = require('./controllers/signup');
 const test = require('./controllers/test');
-const {getHomepageRooms} = require('./models/Room');
+const {getHomepageRooms} = require('./models/RoomModel');
 
 /* Middlewares */
 app.use(cors()); //cross origin sites
@@ -15,7 +15,6 @@ app.use(cookieParser()); // parse cookies
 app.use(express.static('public'));
 app.use(express.json()); // To parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse query parameters bodies
-
 /* Urls */
 app.get('/', async (req, res) =>{
     try{

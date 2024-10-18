@@ -1,12 +1,12 @@
 const {DataTypes, Model, QueryTypes} = require ('sequelize');
 const sequelize = require('../database/database');
-const {user} = require('../models/user');
-const {room} = require('../models/Room');
+const {User} = require('../models/UserModel');
+const {Room} = require('../models/RoomModel');
 
 const months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
-class contract extends Model {};
+class Contract extends Model {};
 
-contract.init(
+Contract.init(
     {
         "contract_id": {
             type: DataTypes.INTEGER,
@@ -16,14 +16,14 @@ contract.init(
         "room_id": {
             type: DataTypes.INTEGER,
             references: {
-                model: room,
+                model: Room,
                 key: 'room_id'
             }
         },
         "user_id": {
             type: DataTypes.INTEGER,
             references: {
-                model: user,
+                model: User,
                 key: 'user_id'
             }
         },
@@ -75,7 +75,7 @@ async function getVacantDates(room_id){
             WHERE room_id = ${room_id};
             `, {
                 type: QueryTypes.SELECT,
-                model: contract,
+                model: Contract,
                 mapToModel: true
         });
 
@@ -103,4 +103,4 @@ async function getContract(user_id){
     }
 }
 
-module.exports = {getVacantDates, getContract};
+module.exports = {Contract, getVacantDates, getContract};

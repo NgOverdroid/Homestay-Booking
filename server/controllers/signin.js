@@ -1,6 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const {signin, emailExists} = require('../models/user');
+const {signin} = require('../models/UserModel');
+const {registrationware} = require('../middlewares/middlewares');
+
+router.use(registrationware);
+
+router.get('/', (req, res) => {
+    res.sendStatus(200);
+});
 
 router.post('/', async (req, res) =>{
     try{
@@ -9,7 +16,8 @@ router.post('/', async (req, res) =>{
             res.sendStatus(200);
         else
             res.sendStatus(404);
-    } catch(error) {
+    } 
+    catch(error) {
         res.send("Error at signin.js " + error);
     }
 });

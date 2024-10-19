@@ -17,14 +17,13 @@ router.post('/', async (req, res) =>{
             req.body.email, 
             req.body.password
         );
-        console.log(user_id);
         if(user_id){
             const token = createToken(user_id);
             res.cookie('token', token, {httpOnly: true, maxAge: 259200000});
-            return res.sendStatus(201);
+            res.sendStatus(201);
         }
         else
-            return res.sendStatus(404);
+            res.sendStatus(404);
     }
     catch(error){
         return res.sendStatus(500);   

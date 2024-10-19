@@ -2,15 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    req.is_authenticated = true;
-    console.log(req);
-    res.send(418);
+    try{
+        throw new Error("Some error");
+    }
+    catch(error){
+        res.status(500).send({error: error.message});
+    }
 });
 
 //if doesn't exist the cookies value will be null
 module.exports = router;
-
-/*
-
-
-*/

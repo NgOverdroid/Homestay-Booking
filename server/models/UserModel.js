@@ -73,7 +73,7 @@ async function createNewUser(first_name, last_name, email, password){
         return new_user.user_id;
     }
     catch(error){
-        console.log("Error at /models/UserModel.js " + error);
+        return error;
     }
 }
 

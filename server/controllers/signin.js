@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {signin} = require('../models/UserModel');
-const {registrationware} = require('../middlewares/middlewares');
+const {registrationware, handleError} = require('../middlewares/middlewares');
 
 router.use(registrationware);
 
@@ -18,8 +18,10 @@ router.post('/', async (req, res) =>{
             res.sendStatus(404);
     } 
     catch(error) {
-        res.send("Error at signin.js " + error);
+        next(error);
     }
 });
+
+router.use(handleError);
 
 module.exports = router;

@@ -55,7 +55,7 @@ async function signin(email, password) {
         else 
             return false;
     } catch(error) {
-        return error;
+        throw error;
     }
 }
 
@@ -73,7 +73,7 @@ async function createNewUser(first_name, last_name, email, password){
         return new_user.user_id;
     }
     catch(error){
-        return error;
+        throw error;
     }
 }
 
@@ -90,7 +90,7 @@ async function deleteUser(email, password){
         else 
             return false;
     } catch(error) {
-        console.log("Error at /models/UserModel.js" + error);
+        throw error;
     }
 }
 

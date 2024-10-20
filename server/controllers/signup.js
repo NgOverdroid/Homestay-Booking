@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createNewUser, createToken } = require('../models/UserModel');
-const {registrationware} = require('../middlewares/middlewares');
+const {registrationware, handleError} = require('../middlewares/middlewares');
 
 router.use(registrationware);
 
@@ -26,9 +26,11 @@ router.post('/', async (req, res) =>{
             res.sendStatus(404);
     }
     catch(error){
-        return res.sendStatus(500);   
+        next(error);   
     }
 });
+
+router.use(handleError);
 
 module.exports = router;
 

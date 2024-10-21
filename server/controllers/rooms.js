@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const {getRoom} = require("../models/RoomModel");
 const {getVacantDates} = require('../models/ContractModel');
+const { handleError } = require("../middlewares/middlewares");
 
 router.get("/:room_id", async (req, res) => {
     try {
@@ -22,10 +23,9 @@ router.post("/contract", async (req, res) => {
         const contract = await createContract();
         res.json(contract);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "An error occurred while creating a contract" });
+        next(error);
     }
 })
 
-
+router.use(handleError);
 module.exports = router; 

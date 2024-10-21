@@ -5,7 +5,7 @@ const {registrationware, handleError} = require('../middlewares/middlewares');
 
 router.use(registrationware);
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     res.sendStatus(200);
 });
 

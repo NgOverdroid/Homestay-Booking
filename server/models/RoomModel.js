@@ -27,11 +27,13 @@ Room.init(
         },
         'cost': {
             type: DataTypes.DECIMAL,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isDecimal: true
+            }
         },
         'description': {
             type: DataTypes.TEXT,
-            allowNull: false,
         },
         'img_src': {
             type: DataTypes.TEXT,
@@ -51,7 +53,7 @@ async function getRoom(room_id){
         return find_room;
     }
     catch(error) {
-        return error;
+        throw error;
     }
 }
 
@@ -68,7 +70,7 @@ async function getHomepageRooms(){
         });
         return find_rooms;
     } catch(error){
-        return error;
+        throw error;
     }
 }
 

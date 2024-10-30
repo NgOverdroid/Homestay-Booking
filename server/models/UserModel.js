@@ -16,11 +16,17 @@ User.init(
         },
         'first_name': {
             type: DataTypes.STRING(20),
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isAlphanumeric: true,
+            }
         },
         'last_name': {
             type: DataTypes.STRING(20),
-            allowNull: false
+            allowNull: false,
+            validate: {
+                isAlphanumeric: true
+            }
         },
         'email': {
             type: DataTypes.STRING,
@@ -46,8 +52,8 @@ async function signin(email, password) {
     try {
         const found_user = await User.findOne({ where: { email} });
         if (found_user) {
-            const compare = bcrypt.compareSync(password, found_user.password);
-            if(compare)
+            const auth = bcrypt.compareSync(password, found_user.password);
+            if(auth)
                 return true;
             else 
                 return false;

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { createNewUser, createToken } = require('../models/UserModel');
-const {registrationware, handleError} = require('../middlewares/middlewares');
+const {registrationware, handleXSS} = require('../middlewares/middlewares');
 
 router.use(registrationware);
 
@@ -9,6 +9,7 @@ router.get('/', async (req, res) => {
     res.sendStatus(200);
 });
 
+router.use(handleXSS);
 router.post('/', async (req, res) =>{
     try{
         const user_id = await createNewUser(
@@ -29,8 +30,6 @@ router.post('/', async (req, res) =>{
         next(error);   
     }
 });
-
-router.use(handleError);
 
 module.exports = router;
 

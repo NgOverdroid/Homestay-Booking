@@ -8,13 +8,15 @@ const signin_urls = require('./controllers/signin');
 const signup_urls = require('./controllers/signup');
 const test = require('./controllers/test');
 const {getHomepageRooms} = require('./models/RoomModel');
+const {handleError} = require('./middlewares/middlewares');
 
 /* Middlewares */
 app.use(cors()); //cross origin sites
-app.use(cookieParser()); // parse cookies
-app.use(express.static('public'));
+app.use(cookieParser()); // parses cookies
+app.use(express.static('public')); //serves static files
 app.use(express.json()); // To parse JSON bodies
-app.use(express.urlencoded({ extended: true })); // Parse query parameters bodies
+app.use(express.urlencoded({ extended: true })); // Parses query parameters bodies
+
 /* Urls */
 app.get('/', async (req, res) =>{
     try{
@@ -22,8 +24,7 @@ app.get('/', async (req, res) =>{
         res.json(places);
     }
     catch(err){
-        console.error(err);
-        res.status(500).json({ message: "An error occurred while retrieving rooms" });
+        next(err);
     }
 })
 
@@ -31,6 +32,9 @@ app.use('/room', rooms_urls);
 app.use('/signin', signin_urls);
 app.use('/signup', signup_urls);
 app.use('/test', test);
+
+/*Handle Error middleware*/
+app.use(handleError);
 
 const PORT = process.env.DB_PORT || 3001;
 

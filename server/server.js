@@ -3,7 +3,7 @@ const app = express();
 require('dotenv').config();
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
-const rooms_urls = require('./controllers/rooms');
+const rooms_urls = require('./controllers/roomController');
 const signin_urls = require('./controllers/signin');
 const signup_urls = require('./controllers/signup');
 const test = require('./controllers/test');

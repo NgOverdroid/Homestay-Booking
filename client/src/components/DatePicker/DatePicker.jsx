@@ -7,23 +7,23 @@ const rightArrow = <FontAwesomeIcon icon={faArrowRight} />
 const leftArrow = <FontAwesomeIcon icon={faArrowLeft} />
 
 function DatePicker(){
-    const monthsList = useRef(null);
-    const [calendarPage, setCalendarPage] = useState(0);
     const [checkinDate, setCheckinDate] = useState('');
     const [checkoutDate, setCheckoutDate] = useState('');
+    const [month_number, setMonthNumber] = useState(1);
 
-    if(monthsList.current === null){
-        monthsList.current = addMonths();
-    }
-
-    function addMonths(){
-        const months = new Array(22);
-        let time = dayjs();
-        for (let i = 0; i < months.length; i++){
-            months[i] = time;
-            time = time.add(1, 'month');
+    const base_month = dayjs.month();
+    const left_month = base_month.add(month_number, "month");
+    const right_month = left_month.add(month_number, 'month');
+    
+    function navigateMonth(direction){
+        if(direction == "previous"){
+            if (month_number > 1)
+                setMonthNumber(month_number - 1);
         }
-        return months;
+        else if (direction == "next"){
+            if (month_number < 24)
+                setMonthNumber(month_number + 1);
+        }
     }
     
     function setCheckDate(e){
@@ -40,12 +40,6 @@ function DatePicker(){
         setCheckinDate("");
         setCheckoutDate("");
     }
-        
-    function goLeftPage(){
-        if (calendarPage > 0){
-            setCalendarPage(c => c - 1);
-        }
-    }
 
     function goRightPage(){
         if (calendarPage < 21){
@@ -61,7 +55,7 @@ function DatePicker(){
                 <div className="grid grid-cols-5 items-center gap-x-3 mx-1.5 pb-3">
                 {/* <!-- Prev Button --> */}
                     <div className="col-span-1">
-                        <button type="button" className="size-8 flex justify-center items-center text-gray-800 hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-100" aria-label="Previous" onClick={goLeftPage}>
+                        <button type="button" className="size-8 flex justify-center items-center text-gray-800 hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-100" aria-label="Previous" onClick={() => navigateMonth("previous")}>
                         {leftArrow}
                         </button>
                     </div>
@@ -107,7 +101,7 @@ function DatePicker(){
 
                 <!-- Days --> */}
                 <div className="flex w-80 flex-wrap" onClick={(e) => setCheckDate(e)}>
-                    <Dates currentTime={monthsList.current[calendarPage]}/>
+                    <Dates currentTime={left_month}/>
                 </div>
                 {/* <!-- End of Days --> */}
             </div>
@@ -132,7 +126,7 @@ function DatePicker(){
 
                 <!-- Next Button --> */}
                 <div className="col-span-1 flex justify-start">
-                    <button type="button" className="size-8 flex justify-center items-center text-gray-800 hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-100" aria-label="Next" onClick={goRightPage}>
+                    <button type="button" className="size-8 flex justify-center items-center text-gray-800 hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-100" aria-label="Next" onClick={() => navigateMonth("next")}>
                         {rightArrow}
                     </button>
                 </div>
@@ -168,7 +162,7 @@ function DatePicker(){
 
                 <!-- Days --> */}
                 <div className="flex w-80 flex-wrap" onClick={(e) => setCheckDate(e)}>
-                    <Dates currentTime={monthsList.current[calendarPage + 1]}/>
+                    <Dates currentTime={right_month}/>
                 </div>
                 {/* <!-- Days --> */}
             </div>

@@ -49,7 +49,7 @@ export default function Index() {
 
 export async function loader() {
   try {
-    const response = await fetch("http://127.0.0.1:3001");
+    const response = await fetch("http://127.0.0.1:3000");
     if (!response.ok)
       throw new Error("Failed to fetch");
     return await response.json();

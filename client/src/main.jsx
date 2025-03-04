@@ -19,8 +19,6 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        loader: rootloader,
-        action: rootaction,
         element: 
         <Suspense>
           <Index/>

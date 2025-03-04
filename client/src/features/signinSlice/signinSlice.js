@@ -12,7 +12,8 @@ export const signinSlice = createSlice({
         login: (state) => {
             state.status = true
         }
-    }
+    },
+    extraReducers: 
 });
 
 export const {logout, login} = signinSlice.actions;

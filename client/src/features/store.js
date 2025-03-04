@@ -1,10 +1,8 @@
 import {configureStore} from '@reduxjs/toolkit';
-import darkmodeReducer from './slices/darkmode/darkmodeSlice';
-import signinReducer from './slices/signin/signinSlice';
+import authReducer from './features/authSlice';
 
-export default configureStore({
+export const store = configureStore({
     reducer: {
-        darkmode: darkmodeReducer,
-        signin: signinReducer
-    }
+        auth: authReducer,
+    },
 });

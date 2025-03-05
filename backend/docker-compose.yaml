@@ -1,0 +1,70 @@
+version: '3.8'
+services:
+  postgres_db:
+    image: postgres:16
+    hostname: postgres_db
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: homestay_booking
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: prisma
+    ports:
+      - '5432:5432'
+    networks:
+      - prisma-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+  app1:
+    build: .
+    environment:
+      - APP_NAME=App1
+    ports:
+      - "3001:3000"
+    stdin_open: true
+    tty: true 
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - prisma-network
+
+  app2:
+    build: .
+    environment:
+      - APP_NAME=App2
+    ports:
+      - "3002:3000"
+    stdin_open: true
+    tty: true 
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - prisma-network
+
+  app3:
+    build: .
+    environment:
+      - APP_NAME=App3
+    ports:
+      - "3003:3000"
+    stdin_open: true
+    tty: true 
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - prisma-network
+networks:
+  prisma-network:
+    name: prisma-network

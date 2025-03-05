@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 const initializeAuth = createAsyncThunk("auth/initialize", async () => {
     const fetchAccessToken = async () => {
         try {
-          const response = await fetch('/api/auth', {
+          const response = await fetch('127.0.0.1:3000/api/auth', {
             method: 'GET',
             credentials: 'include', // Important to send HTTP-only cookies
           });
@@ -40,26 +40,26 @@ export const authSlice = createSlice({
     initialState: { 
         is_loading: true,
         access_token: null,
-        username: ""
+        name: ""
     },
     reducers: {
-        log_in(state, action) {
+        logIn(state, action) {
             state.access_token = action.payload.access_token;
-            state.username = action.payload.username;
+            state.name = action.payload.name;
         },
-        log_out(state) {
+        logOut(state) {
             state.access_token = null;
-            state.username = ""
+            state.name = ""
         }
     },
     extraReducers: (builder) => {
         builder.addCase(initializeAuth.fulfilled, (state, action) => {
           state.access_token = action.payload.access_token;
           state.is_loading = action.payload.is_loading;
-          state.username = action.payload.username;
+          state.name = action.payload.name;
         });
     }
 });
 
-export const {log_in, log_out}  = authSlice.actions
+export const {logIn, logOut}  = authSlice.actions
 export default authSlice.reducer;

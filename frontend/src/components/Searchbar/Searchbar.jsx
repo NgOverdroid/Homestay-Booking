@@ -10,6 +10,11 @@ const DatePicker = lazy(() => import('../DatePicker/DatePicker.jsx'));
 
 function Searchbar({toggleDatePicker, setToggleDatePicker}) {
     const [toggleGuest, setToggleGuest] = useState(false);
+    const navigate = useNavigate();
+
+    function handleSearch(){
+        navigate('/search');
+    }
 
     return(
         <>
@@ -43,7 +48,7 @@ function Searchbar({toggleDatePicker, setToggleDatePicker}) {
                 }
             </div>
             <div className='flex items-center'>
-                <button className={`h-10 bg-red-500 rounded-full mx-auto flex items-center justify-center ${toggleGuest ? " w-24" : " w-10"}`} type='button'>{magnifyingGlass}</button>
+                <button className={`h-10 bg-red-500 rounded-full mx-auto flex items-center justify-center ${toggleGuest ? " w-24" : " w-10"}`} type='button' onClick={handleSearch}>{magnifyingGlass}</button>
             </div>
         </Form>
         </>

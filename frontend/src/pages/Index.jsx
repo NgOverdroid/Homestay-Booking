@@ -1,10 +1,9 @@
 import React, {useState, useRef, useEffect} from "react";
 import Card from '../components/Card/Card.jsx';
 import Filter from "../components/Filter/Filter";
-import { useLoaderData} from "react-router-dom";
 
 export default function Index() {
-  const places = useLoaderData();
+  const [places, setPlaces] = useState(null);
   const [cards, setCards] = useState(12);
   const intersect_card = useRef(null);
 
@@ -18,6 +17,22 @@ export default function Index() {
               img_src={place.img_src}
               ></Card>
   })
+
+  useEffect(() => {
+    async function loader() {
+      try {
+        const response = await fetch("http://127.0.0.1:3000");
+        if (!response.ok)
+          throw new Error("Failed to fetch");
+        const json_data =  await response.json();
+        setPlaces(json_data);
+      } 
+      catch(error) {
+        throw error;
+      }
+    }
+    loader();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(entries =>{
@@ -45,20 +60,4 @@ export default function Index() {
           <div ref={intersect_card} id="intersectcard"></div> 
       </>
   );
-}
-
-export async function loader() {
-  try {
-    const response = await fetch("http://127.0.0.1:3000");
-    if (!response.ok)
-      throw new Error("Failed to fetch");
-    return await response.json();
-  } 
-  catch(error) {
-    throw error;
-  }
-}
-
-export async function action() {
-  return null;
 }

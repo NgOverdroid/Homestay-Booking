@@ -2,7 +2,7 @@ import React from 'react';
 import SigninModal from '../components/SigninModal/SigninModal';
 import SigninForm from '../components/SigninModal/SigninForm/SigninForm';
 import { useLoaderData } from 'react-router-dom';
-import store from '../store';
+import store from '../features/store';
 import root_url from '../misc/stuff';
 
 export async function loader() {

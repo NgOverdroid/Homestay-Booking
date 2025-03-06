@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense } from 'react';
 import { Route, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom';
 import Home from './pages/Home.jsx';
 import Search from './pages/search.jsx';

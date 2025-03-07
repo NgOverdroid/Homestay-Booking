@@ -40,7 +40,7 @@ export const authSlice = createSlice({
     initialState: { 
         is_loading: true,
         access_token: null,
-        name: ""
+        name: "",
     },
     reducers: {
         logIn(state, action) {

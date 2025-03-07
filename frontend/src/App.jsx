@@ -2,13 +2,14 @@ import { lazy, Suspense } from 'react';
 import { Route, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom';
 import Home from './pages/Home.jsx';
 import Search from './pages/Search.jsx';
-import Error from './components/Error.jsx';
+import SignUp from './pages/SignUp.jsx';
+import SignIn from './pages/SignIn.jsx';
 
 export default function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-      <Route path='/' element={ <RootLayout/> }>
+      {/* <Route path='/' element={ <RootLayout/> }>
           <Route index element={ <Home/> }/>
           <Route path='search' element={ <Search/> }/>
           <Route path='room' element={ <ContactLayout/> }>
@@ -22,8 +23,9 @@ export default function App() {
           <Route path='*' element={ <NotFound/> }/>
       </Route>
       <Route path='/account' element={}/>
-      <Route path='/signup' element={}/>
-      <Route path='/signin' element={}></Route>
+      */}
+      <Route path='/signin' element={ <SignIn/> }/>
+      <Route path='/signup' element={ <SignUp/> }></Route>
       </>
     )
   )

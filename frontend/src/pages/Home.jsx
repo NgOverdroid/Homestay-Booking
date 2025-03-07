@@ -1,8 +1,8 @@
 import React, {useState, useRef, useEffect} from "react";
 import Card from '../components/Card/Card.jsx';
-import Filter from "../components/Filter/Filter";
+import Filter from "../components/Filter/Filter.jsx";
 
-export default function Index() {
+export default function Home() {
   const [places, setPlaces] = useState(null);
   const [cards, setCards] = useState(12);
   const intersect_card = useRef(null);

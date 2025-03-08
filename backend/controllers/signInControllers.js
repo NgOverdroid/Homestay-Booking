@@ -4,12 +4,14 @@ const { createToken } = require("../controllers/authController.js");
 
 async function signIn(req, res){
     if(req.cookies.refresh_token){
-        return res.status(403);
+        return res.status(403).json({message: "Forbidden: Already Signed In"});
     }
     try {
         const email = req.body.email;
         const password = req.body.password;
-        
+        console.log("Request Body: " + req.body);
+        console.log("Req email " + req.body.email);
+        console.log("Req password " + req.body.password);
         const user = await prisma.user.findUnique({
             where: { email: email }
         });

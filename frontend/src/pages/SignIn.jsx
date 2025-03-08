@@ -1,13 +1,59 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect} from "react";
+import { useNavigate, Navigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { useSelector, useDispatch } from "react-redux";
+import { logIn } from "../features/authSlice";
 
 export default function SignIn(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error_message, setErrorMessage] = useState("");
+    const {access_token} = useSelector((state) => state.auth);  
+    const dispatch = useDispatch();
     const navigate = useNavigate();
-    const mutation = useQuery();
 
+    const mutation = useMutation({
+        mutationFn: authenticateUser,
+        onSuccess: (data) => setTokenAndRedirect(data),
+        onError: (error) => setErrorMessage(error.message),
+    });
+
+    async function authenticateUser(){
+        const response = await fetch("http://127.0.0.1:3000/signin", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "email": email,
+                "password": password
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok)
+            throw new Error(data.message);
+
+        return data;
+    }
+
+    function setTokenAndRedirect(data){
+        dispatch(logIn({ access_token: data.access_token}));
+        navigate(-1);
+    }
+
+    async function handleSignIn(e){
+        e.preventDefault();
+        mutation.mutate();
+    }
+
+    useEffect(() => {}, []);
+    if (access_token)
+        return(
+            <Navigate to="/test" replace={true} ></Navigate>
+        );
+    
     return(
         <>
         <div className="min-h-screen bg-gray-100">
@@ -44,6 +90,11 @@ export default function SignIn(){
                                 onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
+                                { 
+                                    (error_message == "Username does not exist")
+                                    && 
+                                    <p className="mt-2 text-sm text-red-600">Username does not exist</p>
+                                }
                             </div>
 
                             {/* <!-- Password Field --> */}
@@ -56,7 +107,10 @@ export default function SignIn(){
                                     required
                                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
                                     placeholder="••••••••"
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        setErrorMessage("");
+                                    }}
                                     />
                                     <button
                                     type="button"
@@ -65,12 +119,18 @@ export default function SignIn(){
                                     <i className="w-6 h-6"></i>
                                     </button>
                                 </div>
+                                { 
+                                    (error_message == "Incorrect password")
+                                    && 
+                                    <p className="mt-2 text-sm text-red-600">Incorrect password</p>
+                                }
                             </div>
 
                             {/* <!-- Submit Button --> */}
                             <button
                             type="submit"
                             className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 focus:ring-4 focus:ring-red-600 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={(e) => handleSignIn(e)}
                             >
                             <span className="inline-flex items-center">
                                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

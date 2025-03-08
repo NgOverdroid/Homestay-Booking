@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { useSelector, useDispatch} from 'react-redux';
 import { logIn } from "../features/authSlice";
@@ -10,6 +10,7 @@ export default function SignUp(){
     const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
     const [error_message, setErrorMessage] = useState("");
+    const {access_token} = useSelector((state) => state.auth);
     const [validation, setValidation] = useState({
         "length": false,
         "uppercase": false,
@@ -19,40 +20,41 @@ export default function SignUp(){
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const mutation = useMutation({
-        mutationFn: async () => {
-                const response = await fetch("127.0.0.1:3000/user/create", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        "name": name,
-                        "email": email,
-                        "password": password,
-                        "phone": phone
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || "Signup failed");
-                }
-    
-                return data;
-        },
+        mutationFn: createAccount,
         onSuccess: (data) => {
-            dispatch(logIn({
-                access_token: data.access_token,
-                name: data.username
-            }));
-            navigate(-1);
+            dispatch(logIn(data.access_token));
+            navigate('/test');
         },
-        onError: (error) =>{
-            setErrorMessage(error);
-        }
+        onError: (error) => setErrorMessage(error.message)
     });
 
+    async function createAccount({name, email, password, phone}){
+        const response = await fetch("http://127.0.0.1:3000/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "name": name,
+                "email": email,
+                "password": password,
+                "phone": phone
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message);
+        }
+
+        return data;
+    }
+
+    function handleCreateAccount(e){
+        e.preventDefault();
+        mutation.mutate({name, email, password, phone});
+    }
 
     useEffect(() => {
         function validatePassword(){
@@ -98,6 +100,11 @@ export default function SignUp(){
         })
     }, [password]);
 
+    if (access_token)
+        return(
+            <Navigate replace={true} to="/test"></Navigate>
+        );
+
     return(
         <>
         <div className="min-h-screen bg-gray-100">
@@ -132,7 +139,7 @@ export default function SignUp(){
                                 type="text"
                                 name="name"
                                 required
-                                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
+                                className="w-full px-4 py-3 rounded-lg border text-black border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
                                 placeholder="John Doe"
                                 onChange={(e) => setName(e.target.value)}
                                 />
@@ -147,7 +154,7 @@ export default function SignUp(){
                                     type="email"
                                     name="email"
                                     required
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
+                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors text-black"
                                     placeholder="you@example.com"
                                     onChange={(e) => setEmail(e.target.value)}
                                     />
@@ -172,7 +179,7 @@ export default function SignUp(){
                                     type="text"
                                     name="phone"
                                     required
-                                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
+                                    className="w-full px-4 py-3 rounded-lg border text-black border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
                                     onChange={(e) => setPhone(e.target.value)}
                                     />
                                     <i className="fas fa-envelope absolute right-2 top-4 w-6 h-6 text-gray-400"></i>
@@ -187,7 +194,7 @@ export default function SignUp(){
                                 name="password"
                                 type="password"
                                 required
-                                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
+                                className="w-full px-4 py-3 rounded-lg border text-black border-gray-300 focus:ring-2 focus:ring-red-600 focus:border-transparent transition-colors"
                                 placeholder="••••••••"
                                 onChange={(e) => setPassword(e.target.value)}
                                 />
@@ -212,8 +219,10 @@ export default function SignUp(){
 
                             {/* <!-- Submit Button --> */}
                             <button
-                            type="submit"
+                            type="button"
                             className="w-full bg-red-600 text-white py-3 rounded-lg font-semibold hover:bg-red-700 focus:ring-4 focus:ring-red-600 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled = { mutation.isPending ? true : false}
+                            onClick={(e) => handleCreateAccount(e)}
                             >
                             { 
                                 mutation.isPending
@@ -231,14 +240,6 @@ export default function SignUp(){
                                 </span>
 
                             }
-                            <span className="inline-flex items-center">
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Create Account
-                            </span>
-                            <span></span>
                             </button>
 
                             {/* <!-- Form Switch --> */}
